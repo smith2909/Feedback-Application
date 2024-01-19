@@ -1,0 +1,41 @@
+﻿@page
+@model FeedbackApp.Pages.AppReport.EditReportedTaskModel
+@{
+}
+
+<br />
+<h2>List of Reported Tasks</h2>
+<a class="btn btn-primary btn-sm" href="/AppReport/MainPage">Report New Task</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Application</th>
+            <th>Priority</th>
+            <th>CreationDate</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach(var task in Model.listReports)
+{
+        <tr>
+            <td>@task.id</td>
+            <td>@task.Type</td>
+            <td>@task.Title</td>
+            <td>@task.Description</td>
+            <td>@task.Location</td>
+            <td>@task.Application</td>
+            <td>@task.Priority</td>
+            <td>@task.CreationDate</td>
+            <td>
+                <a class="btn btn-primary btn-sm" href="/AppReport/EditTable?id=@task.id">Edit</a>
+            </td>
+         </tr>
+}
+    </tbody>
+</table>

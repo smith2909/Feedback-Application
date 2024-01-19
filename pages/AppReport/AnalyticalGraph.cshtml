@@ -1,0 +1,111 @@
+﻿@page
+@model FeedbackApp.Pages.AppReport.AnalyticalGraphModel
+@{
+}
+<h2>Categories</h2>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    #chartType{
+        width : 200px;
+    }
+    #myChart{
+        height : 200px;
+        width : 300px;
+    }
+</style>
+
+<form method="post">
+    <label for="chartType">Select Chart Type: </label>
+    <select id="chartType" asp-for="chartStyle">
+        <option value="bar">Bar Chart</option>
+        <option value="pie">Pie Chart</option>
+        <option value="line">Line Chart</option>
+        <option value="bubble">Bubble Chart</option>
+        <option value="doughnut">Doughnut Chart</option>
+        <option value="polarArea">Polar Area Chart</option>
+        <option value="radar">Radar Chart</option>
+        <option value="scatter">Scatter Chart</option>
+    </select>
+    <label for="selectedColumn" >Select data:</label>
+    <select id="selectedColumn" asp-for="columnName">
+        <option value="CategoryID">Category</option>
+        <option value="ApplicationID">Application</option>
+        <option value="LocationID">Location</option>
+        <option value="Status">Status</option>
+    </select>
+    <label for="selectedValue" >selected value</label>
+    <input type="text" id="selectedValue" readonly />
+ 
+    <button type="submit">Show</button> 
+</form>
+<canvas id="myChart"></canvas>
+
+ <script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart;
+
+    function updateChartType() {
+
+        var chartType = document.getElementById('chartType').value;
+        var columnName = document.getElementById('selectedColumn').value;
+        document.getElementById('selectedValue').value = columnName;
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        
+        var labels = @Html.Raw(Json.Serialize(Model.occurences.Keys));
+        var chartData = {
+            labels: labels,
+            datasets: [{
+                label: 'Number of Categories',
+                data: @Html.Raw(Json.Serialize(Model.occurences.Values)),
+                backgroundColor: generateRandomColor(labels.length),
+                @*borderColor: 'rgba(75,192,192,1)',*@
+                borderWidth: 1
+            }]
+        };
+
+        // Function to generate a random color
+        function generateRandomColor(count) {
+            var colors = [];
+            for (var i = 0; i < count; i++) { 
+                colors.push('rgba(' +
+                    Math.floor(Math.random() * 256) + ',' +
+                    Math.floor(Math.random() * 256) + ',' +
+                    Math.floor(Math.random() * 256) + ', 0.5)');
+            }
+            return colors;
+        }
+
+        myChart = new Chart(ctx, {
+            type: chartType,
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    updateChartType()
+
+</script>
+
+@* <h2>Occurences of Strings</h2>
+<table>
+    <tr>
+        <th>String</th>
+        <th>Occurences</th>
+    </tr>
+    @foreach(var item in Model.occurences)
+    {
+        <tr>
+            <td>@item.Key</td>
+            <td>@item.Value</td>
+        </tr>
+    }
+</table> *@

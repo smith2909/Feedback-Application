@@ -1,0 +1,124 @@
+﻿@page
+@model FeedbackApp.Pages.AppReport.IndexModel
+@{
+}
+
+<br>
+<h2>Report a bug,error or suggestion</h2>
+
+@if(Model.errorMessage.Length>0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>@Model.errorMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form method="POST" enctype="multipart/form-data">
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Type</label>
+        <div class="col-sm-6">
+            <select class="form-select" name="Type" aria-label="Type">
+                <option>Error</option>
+                <option>Bug</option>
+                <option>Enhancement</option>
+                <option>Business Rule</option>
+                <option>Idea</option>
+                <option>Other</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Factory Location</label>
+        <div class="col-sm-6">
+            <select class="form-select" name="Location" aria-label="Location">
+                <option>Jefferson City,MO</option>
+                <option>South Boston,VA</option>
+                <option>Crystal Springs,MS</option>
+                <option>Alamo,TN</option>
+                <option>Mount Pleasant,PA</option>
+                <option>Atlanta,GA</option>
+                <option>Raleigh,NC</option>
+                <option>Bland,VA</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Application</label>
+        <div class="col-sm-6">
+            <select class="form-select" name="Application" aria-label="Application">
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Title</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="Title" value="@Model.newReport.Title" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Description</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="Description" value="@Model.newReport.Description" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Attachments</label>
+        <div class="=col-sm-6">
+            <input type="file" name="Attachments" multiple/>
+            <small class="form-text text-muted">You can upload one or more attachments.</small>
+        </div>
+    </div>
+
+    @if (Model.successMessage.Length>0)
+    {
+        <div class="row mb-3">
+            <div class="col-sm-9">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>@Model.successMessage</strong>
+                    <button type="button" class="btn-close" data-bs-dismissible="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row mb-3">
+        <div class="offset-sm-3 col-sm-3 d-grid">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <div class="col-sm-3 d-grid">
+            <a class="btn btn-outline-primary" href="/" role="button">Cancel</a>
+        </div>
+    </div>
+    
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Add script for dynamic dropdown -->
+    <script>
+        $(document).ready(function () {
+            // Attach change event to location dropdown
+            $('select[name="Location"]').change(function () {
+                // Get the selected location
+                var selectedLocation = $(this).val();
+
+                // Make an AJAX request to the endpoint to fetch applications for the selected location
+                $.get('/AppReport/GetApplication?handler=OnGet&location=' + selectedLocation, function (data) {
+                    // Update the options in the application dropdown
+                    var applicationDropdown = $('select[name="Application"]');
+                    applicationDropdown.empty(); // Clear existing options
+
+                    // Add new options based on the received data
+                    $.each(data, function (index, item) {
+                        applicationDropdown.append($('<option>', {
+                            value: item,
+                            text: item
+                        }));
+                    });
+                });
+            });
+        });
+    </script>
+
+</form>
+
